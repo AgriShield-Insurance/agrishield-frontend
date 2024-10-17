@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "imageUrl": "rain.png",
+    "title": "Flood Insurance",
+    "description": "Protect your property from excessive rain and flooding with our comprehensive coverage."
+  },
+  {
+    "id": 2,
+    "imageUrl": "heat.png",
+    "title": "Drought Protection",
+    "description": "Safeguard your assets against heat waves and prolonged drought conditions with our specialized insurance."
+  },
+  {
+    "id": 3,
+    "imageUrl": "hail.png",
+    "title": "Hail Damage Coverage",
+    "description": "Shield your property from hail damage with our tailored insurance plans for severe weather events."
+  }
+]

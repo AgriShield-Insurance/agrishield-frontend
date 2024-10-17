@@ -10,6 +10,7 @@ import {
   IconButton,
   useDisclosure,
   Stack,
+  Text,
 } from "@chakra-ui/react"
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons"
 
@@ -61,11 +62,16 @@ export default function HomeNavBar() {
           _hover={{ bg: "gray.100" }}
         />
         <HStack spacing={8} alignItems="center">
-          <HStack>
+          <HStack as="a" href="/" cursor="pointer" _hover={{ textDecoration: 'none' }}>
             <Image src="/logo.png" alt="AgriShield Logo" width={80} height={80} />
-            <Box color="white" fontWeight="bold" fontSize="2xl">
+            <Text
+              color="blue.800"
+              fontWeight="bold"
+              fontSize="2xl"
+              textShadow="0 0 10px white"
+            >
               AgriShield
-            </Box>
+            </Text>
           </HStack>
           <HStack
             as="nav"
