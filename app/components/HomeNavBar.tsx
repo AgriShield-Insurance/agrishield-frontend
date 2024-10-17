@@ -1,6 +1,6 @@
 'use client'
 
-import React from "react"
+import React, { useEffect, useState } from "react"
 import Image from "next/image"
 import {
   Box,
@@ -13,8 +13,9 @@ import {
   Text,
 } from "@chakra-ui/react"
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons"
+import { useAccount } from "wagmi"
 
-const Links = ["About", "Contact", "FAQ", "Insurances"]
+const Links = ["Contact", "FAQ", "Insurances"]
 
 const NavLink = ({ children }: { children: string }) => (
   <Link
@@ -38,6 +39,12 @@ const NavLink = ({ children }: { children: string }) => (
 
 export default function HomeNavBar() {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { address, isConnected } = useAccount();
+  const [isProfileConnected, setIsProfileConnected] = useState(false);
+  
+  useEffect(() => {
+    setIsProfileConnected(isConnected);
+  }, [isConnected]);
 
   return (
     <Box
@@ -84,7 +91,10 @@ export default function HomeNavBar() {
           </HStack>
         </HStack>
         <Flex alignItems="center">
-            <w3m-button />
+          {isProfileConnected && (
+            <NavLink>Profile</NavLink>
+          )}
+          <w3m-button />
         </Flex>
       </Flex>
 
@@ -94,6 +104,9 @@ export default function HomeNavBar() {
             {Links.map((link) => (
               <NavLink key={link}>{link}</NavLink>
             ))}
+            {isProfileConnected && (
+              <NavLink>Profile</NavLink>
+            )}
           </Stack>
         </Box>
       ) : null}
