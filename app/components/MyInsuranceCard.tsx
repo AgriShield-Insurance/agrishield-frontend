@@ -32,6 +32,17 @@ const MyInsuranceCard: React.FC<MyInsuranceCardProps> = ({
 }) => {
   const toast = useToast();
 
+  const showToast = (title: string, description: string, status: 'success' | 'error') => {
+    toast({
+      title,
+      description,
+      status,
+      duration: 5000,
+      isClosable: true,
+      position: 'bottom-right',
+    });
+  };
+
   const handleClaim = async () => {
     try {
       // Check if MetaMask is installed
@@ -44,38 +55,32 @@ const MyInsuranceCard: React.FC<MyInsuranceCardProps> = ({
         const signer = await provider.getSigner();
 
         // Replace with your deployed AgriShield contract address
-        const contractAddress = process.env.NEXT_PUBLIC_AGRI_SHIELD_CONTRACT_ADDRESS || '';
+        const contractAddress = process.env.NEXT_PUBLIC_AGRISHIELD_CONTRACT_ADDRESS || '';
         const contract = new ethers.Contract(contractAddress, AgriShieldABI.abi, signer);
 
         // Call the claim function
         const tx = await contract.claim(tokenId);
         await tx.wait();
 
-        toast({
-          title: 'Claim successful',
-          description: 'Your insurance claim has been processed.',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        });
+        showToast(
+          'Claim successful',
+          'Your insurance claim has been processed.',
+          'success'
+        );
       } else {
-        toast({
-          title: 'MetaMask not detected',
-          description: 'Please install MetaMask to use this feature.',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
+        showToast(
+          'MetaMask not detected',
+          'Please install MetaMask to use this feature.',
+          'error'
+        );
       }
     } catch (error) {
       console.error('Error claiming insurance:', error);
-      toast({
-        title: 'Claim failed',
-        description: 'There was an error processing your claim. Please try again.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
+      showToast(
+        'Claim failed',
+        'There was an error processing your claim. Please try again.',
+        'error'
+      );
     }
   };
 
