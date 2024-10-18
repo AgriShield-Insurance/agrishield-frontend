@@ -1,6 +1,7 @@
 import React from 'react';
-import { Box, Text, VStack, Button, useDisclosure } from '@chakra-ui/react';
-import InsuranceModal from './InsuranceModal';
+import { Box, Text, VStack, Button, Image, useToast } from '@chakra-ui/react';
+import { ethers } from 'ethers';
+import AgriShieldABI from '../contracts/AgriShield.json';
 
 interface MyInsuranceCardProps {
   insuranceType: string;
@@ -8,6 +9,18 @@ interface MyInsuranceCardProps {
   endDate: string;
   paidAmount: string;
   tokenId: number;
+}
+function getImageUrl(type: string) {
+    switch (type) {
+        case 'Snowfall Coverage':
+            return 'hail.png';
+        case 'Drought Protection':
+            return 'heat.png';
+        case 'Flood Insurance':
+            return 'rain.png';
+        default:
+            return 'rain.png';
+    }
 }
 
 const MyInsuranceCard: React.FC<MyInsuranceCardProps> = ({
@@ -17,25 +30,77 @@ const MyInsuranceCard: React.FC<MyInsuranceCardProps> = ({
   paidAmount,
   tokenId,
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
+
+  const handleClaim = async () => {
+    try {
+      // Check if MetaMask is installed
+      if (typeof window.ethereum !== 'undefined') {
+        // Request account access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (window.ethereum as any).request({ method: 'eth_requestAccounts' });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const provider = new ethers.BrowserProvider(window.ethereum as any);
+        const signer = await provider.getSigner();
+
+        // Replace with your deployed AgriShield contract address
+        const contractAddress = process.env.NEXT_PUBLIC_AGRI_SHIELD_CONTRACT_ADDRESS || '';
+        const contract = new ethers.Contract(contractAddress, AgriShieldABI.abi, signer);
+
+        // Call the claim function
+        const tx = await contract.claim(tokenId);
+        await tx.wait();
+
+        toast({
+          title: 'Claim successful',
+          description: 'Your insurance claim has been processed.',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: 'MetaMask not detected',
+          description: 'Please install MetaMask to use this feature.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error('Error claiming insurance:', error);
+      toast({
+        title: 'Claim failed',
+        description: 'There was an error processing your claim. Please try again.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
-    <>
-      <Box
-        borderWidth="1px"
-        borderRadius="lg"
-        overflow="hidden"
-        borderColor="blue.300"
-        p={4}
-        shadow="md"
-        _hover={{ transform: 'scale(1.01)', transition: 'transform 0.2s' }}
-        cursor="pointer"
-        onClick={onOpen}
-      >
-        <VStack spacing={3} align="start">
-          <Text fontSize="xl" fontWeight="bold">
-            Insurance Policy #{tokenId}
-          </Text>
+    <Box
+      maxW="sm"
+      borderWidth="1px"
+      borderRadius="lg"
+      overflow="hidden"
+      borderColor="blue.300"
+      height="fit-content"
+      cursor="pointer"
+      p={4}
+    >
+      <VStack spacing={4} align="stretch">
+        <Image
+          src={getImageUrl(insuranceType)}
+          alt={insuranceType}
+          objectFit="cover"
+          alignSelf="center"
+        />
+        <Text fontSize="xl" fontWeight="bold">
+          Insurance Policy #{tokenId}
+        </Text>
+        <VStack spacing={2} align="stretch">
           <Text>
             <strong>Type:</strong> {insuranceType}
           </Text>
@@ -48,28 +113,18 @@ const MyInsuranceCard: React.FC<MyInsuranceCardProps> = ({
           <Text>
             <strong>Paid Amount:</strong> {paidAmount} ETH
           </Text>
-          <Button
-            mt={4}
-            colorScheme="blue"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              onOpen();
-            }}
-          >
-            View Details
-          </Button>
         </VStack>
-      </Box>
-
-      <InsuranceModal
-        isOpen={isOpen}
-        onClose={onClose}
-        title={`Insurance Policy #${tokenId}`}
-        description={`This is a ${insuranceType} covering from ${startDate} to ${endDate}.`}
-        imageUrl="/path-to-your-image.png" // Replace with actual image path if available
-      />
-    </>
+        <Button
+          mt={2}
+          colorScheme="green"
+          size="sm"
+          onClick={handleClaim}
+          width="full"
+        >
+          Claim
+        </Button>
+      </VStack>
+    </Box>
   );
 };
 

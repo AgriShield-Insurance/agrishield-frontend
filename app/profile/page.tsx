@@ -97,7 +97,9 @@ const MyProfilePage: React.FC = () => {
         My Insurance NFTs
       </Heading>
       {insurancePolicies.length === 0 ? (
+        <>
         <Text>No insurance policies found.</Text>
+      </>
       ) : (
         <Grid
           templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }}
