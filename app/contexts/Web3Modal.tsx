@@ -5,7 +5,7 @@ import { walletConnectProvider, EIP6963Connector } from '@web3modal/wagmi';
 
 import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
-import { arbitrum, optimism, polygon } from 'viem/chains';
+import { arbitrum, optimism, polygon, localhost } from 'viem/chains';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
@@ -16,11 +16,11 @@ const projectId = "f580c8e9dd78299f6aadf3e60c4e2b04"
 
 // 2. Create wagmiConfig
 const { chains, publicClient } = configureChains(
-    [arbitrum, polygon, optimism],
+    [arbitrum, polygon, optimism, localhost],
     [walletConnectProvider({ projectId }), publicProvider()]
 );
 
-//TODO: Add metadata
+// TODO: Add metadata
 const metadata = {
     name: 'Web3Modal',
     description: 'Web3Modal Example',
@@ -51,6 +51,7 @@ const themeVariables = {
     '--w3m-border-radius-master': '2px',
     '--w3m-font-size-master': '12px',
 };
+
 // 3. Create modal
 createWeb3Modal({ wagmiConfig, projectId, chains, themeVariables });
 
