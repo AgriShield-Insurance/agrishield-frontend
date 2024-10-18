@@ -86,7 +86,7 @@ const InsuranceModal: React.FC<InsuranceModalProps> = ({
       const signer = await provider.getSigner();
 
       // Replace with your deployed contract address
-      const AgriShieldAddress = '0xYourContractAddressHere'; // TODO: Replace with actual address
+      const AgriShieldAddress = process.env.NEXT_PUBLIC_AGRISHIELD_CONTRACT_ADDRESS || ''; // TODO: Replace with actual address
 
       // Initialize contract instance
       const agriShield = new ethers.Contract(

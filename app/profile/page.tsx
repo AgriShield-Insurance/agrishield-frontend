@@ -33,13 +33,13 @@ const MyProfilePage: React.FC = () => {
         const account = await signer.getAddress();
 
         const agriShieldNFTContract = new ethers.Contract(
-          'YOUR_AGRISHLIELD_NFT_CONTRACT_ADDRESS',
+          process.env.NEXT_PUBLIC_AGRISHIELD_NFT_CONTRACT_ADDRESS || '',
           AgriShieldNFT.abi,
           signer
         );
 
         const agriShieldContract = new ethers.Contract(
-          'YOUR_AGRISHLIELD_CONTRACT_ADDRESS',
+          process.env.NEXT_PUBLIC_AGRISHIELD_CONTRACT_ADDRESS || '',
           AgriShield.abi,
           signer
         );
