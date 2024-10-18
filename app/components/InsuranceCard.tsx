@@ -21,7 +21,7 @@ const InsuranceCard: React.FC<InsuranceCardProps> = ({ imageUrl, title, descript
         overflow="hidden"
         borderColor={'blue.300'}
         height={'fit-content'}
-        whileHover={{ scale: 1.05 }}
+        whileHover={{ scale: 1.02 }}
         onClick={onOpen}
         cursor="pointer"
       >

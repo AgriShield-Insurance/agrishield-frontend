@@ -39,7 +39,7 @@ const NavLink = ({ children }: { children: string }) => (
 
 export default function HomeNavBar() {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
   const [isProfileConnected, setIsProfileConnected] = useState(false);
   
   useEffect(() => {
