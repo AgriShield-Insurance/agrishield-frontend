@@ -50,9 +50,9 @@ const MyProfilePage: React.FC = () => {
         const policies: InsurancePolicy[] = [];
 
         // Check each NFT
-        for (let tokenId = 0; tokenId < totalSupply; tokenId++) {
+        for (let tokenId = 1; tokenId < totalSupply; tokenId++) {
           const owner = await agriShieldNFTContract.ownerOf(tokenId);
-          
+
           // If the NFT belongs to the connected account, fetch its details
           if (owner.toLowerCase() === account.toLowerCase()) {
             const insurancePolicy = await agriShieldNFTContract.getInsurancePolicy(tokenId);
@@ -73,6 +73,7 @@ const MyProfilePage: React.FC = () => {
               paidAmount: paidAmountInEth,
               tokenId: BigInt(tokenId),
             });
+            console.log(policies)
           }
         }
 
@@ -86,7 +87,7 @@ const MyProfilePage: React.FC = () => {
   }, []);
 
   const getInsuranceType = (typeId: number): string => {
-    const types = ['Crop Insurance', 'Livestock Insurance', 'Equipment Insurance'];
+    const types = ['None', 'Snowfall Coverage', 'Drought Protection', "Flood Insurance"];
     return types[typeId] || 'Unknown';
   };
 
@@ -98,8 +99,8 @@ const MyProfilePage: React.FC = () => {
       {insurancePolicies.length === 0 ? (
         <Text>No insurance policies found.</Text>
       ) : (
-        <Grid 
-          templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }} 
+        <Grid
+          templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }}
           gap={4}
         >
           {insurancePolicies.map((policy) => (
