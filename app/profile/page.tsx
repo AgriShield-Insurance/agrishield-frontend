@@ -44,32 +44,36 @@ const MyProfilePage: React.FC = () => {
           signer
         );
 
-        const balance: bigint = await agriShieldNFTContract.balanceOf(account);
-        const balanceNumber = Number(balance);
+        // Get the total number of NFTs minted
+        const totalSupply: bigint = await agriShieldNFTContract.tokenCounter();
 
         const policies: InsurancePolicy[] = [];
 
-        for (let i = 0; i < balanceNumber; i++) {
-          const tokenId: bigint = await agriShieldNFTContract.tokenOfOwnerByIndex(account, i);
+        // Check each NFT
+        for (let tokenId = 0; tokenId < totalSupply; tokenId++) {
+          const owner = await agriShieldNFTContract.ownerOf(tokenId);
+          
+          // If the NFT belongs to the connected account, fetch its details
+          if (owner.toLowerCase() === account.toLowerCase()) {
+            const insurancePolicy = await agriShieldNFTContract.getInsurancePolicy(tokenId);
+            const insuranceType = getInsuranceType(insurancePolicy.insuranceType);
+            const startDate = new Date(Number(insurancePolicy.startDate) * 1000).toLocaleDateString();
+            const endDate = new Date(Number(insurancePolicy.endDate) * 1000).toLocaleDateString();
 
-          const insurancePolicy = await agriShieldNFTContract.getInsurancePolicy(tokenId);
-          const insuranceType = getInsuranceType(insurancePolicy.insuranceType);
-          const startDate = new Date(Number(insurancePolicy.startDate) * 1000).toLocaleDateString();
-          const endDate = new Date(Number(insurancePolicy.endDate) * 1000).toLocaleDateString();
+            const paidAmount: bigint = await agriShieldContract.getRequiredPayment(
+              insurancePolicy.startDate,
+              insurancePolicy.endDate
+            );
+            const paidAmountInEth = ethers.formatEther(paidAmount);
 
-          const paidAmount: bigint = await agriShieldContract.getRequiredPayment(
-            insurancePolicy.startDate,
-            insurancePolicy.endDate
-          );
-          const paidAmountInEth = ethers.formatEther(paidAmount);
-
-          policies.push({
-            insuranceType,
-            startDate,
-            endDate,
-            paidAmount: paidAmountInEth,
-            tokenId,
-          });
+            policies.push({
+              insuranceType,
+              startDate,
+              endDate,
+              paidAmount: paidAmountInEth,
+              tokenId: BigInt(tokenId),
+            });
+          }
         }
 
         setInsurancePolicies(policies);
