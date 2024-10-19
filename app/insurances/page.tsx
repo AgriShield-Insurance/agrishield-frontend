@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, SimpleGrid } from "@chakra-ui/react";
+import { Box, SimpleGrid, Heading, VStack } from "@chakra-ui/react";
 import InsuranceCard from "../components/InsuranceCard";
 import insurancesData from "./insuranceData.json";
 
@@ -26,6 +26,10 @@ export default function InsurancesPage() {
       width="80%"
       p={8}
     >
+        <VStack>
+      <Heading as="h1" size="2xl" fontWeight="bold" mb={4} alignSelf="flex-start">
+        Pick an Insurance
+      </Heading>
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
         {typedInsurancesData.map((insurance, index) => (
           <InsuranceCard
@@ -36,6 +40,7 @@ export default function InsurancesPage() {
           />
         ))}
       </SimpleGrid>
+      </VStack>
     </Box>
   );
 }

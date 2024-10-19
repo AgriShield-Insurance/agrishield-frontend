@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -38,7 +38,20 @@ const InsuranceModal: React.FC<InsuranceModalProps> = ({
   const [selectedCity, setSelectedCity] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [estimatedCost, setEstimatedCost] = useState<string>('');
   const toast = useToast();
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const daysDifference = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+      const cost = (daysDifference * 0.01).toFixed(3);
+      setEstimatedCost(cost);
+    } else {
+      setEstimatedCost('');
+    }
+  }, [startDate, endDate]);
 
   const showToast = (
     title: string,
@@ -189,9 +202,15 @@ const InsuranceModal: React.FC<InsuranceModalProps> = ({
               <Input
                 type="date"
                 placeholder="End Date"
+                mb={4}
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
               />
+              {estimatedCost && (
+                <Text fontWeight="bold" mb={4}>
+                  Estimated Cost: {estimatedCost} ETH
+                </Text>
+              )}
             </Box>
           </Flex>
         </ModalBody>
