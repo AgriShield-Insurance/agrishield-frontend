@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Text, VStack, Button, Image, useToast } from '@chakra-ui/react';
 import { ethers } from 'ethers';
 import AgriShieldABI from '../contracts/AgriShield.json';
+import { FaLock } from 'react-icons/fa';
 
 interface MyInsuranceCardProps {
   insuranceType: string;
@@ -84,6 +85,8 @@ const MyInsuranceCard: React.FC<MyInsuranceCardProps> = ({
     }
   };
 
+  const isEndDatePassed = new Date(endDate) < new Date();
+
   return (
     <Box
       maxW="sm"
@@ -125,6 +128,9 @@ const MyInsuranceCard: React.FC<MyInsuranceCardProps> = ({
           size="sm"
           onClick={handleClaim}
           width="full"
+          isDisabled={isEndDatePassed}
+          _hover={isEndDatePassed ? { cursor: 'not-allowed' } : {}}
+          rightIcon={isEndDatePassed ? <FaLock /> : undefined}
         >
           Claim
         </Button>
